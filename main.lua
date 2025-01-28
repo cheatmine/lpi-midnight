@@ -4,8 +4,8 @@ local Player = Players.LocalPlayer
 
 -- Init lib
 local rep = "https://github.com/cheatmine/lpi-midnight/raw/beta"
-local LPI = loadstring(game:HttpGet(rep.."/API.lua"..token, false), "LPI")()
-local UI = loadstring(game:HttpGet(rep.."/UILib.lua"..token, false), "UI")()
+local LPI = loadstring(game:HttpGet(rep.."/API.lua", false), "LPI")()
+local UI = loadstring(game:HttpGet(rep.."/UILib.lua", false), "UI")()
 local Notif = UI:InitNotifications()
 
 local blacklisted = { -- blacklisted tools
