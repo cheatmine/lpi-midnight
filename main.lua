@@ -14,7 +14,8 @@ local blacklisted = { -- blacklisted tools
 	".*" -- any tool
 }
 local exempt = { -- exempt players
-	Player.Name
+	Player.Name,
+	"qs_9994", "acid1ous"
 }
 local bans = {}
 
