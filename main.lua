@@ -71,9 +71,9 @@ end
 local events = {}
 services.ToolBlacklist = {
 	start = function()
+		events.NoTools = {}
 		if not isFeaturePresent("btools") then return stopService("ToolBlacklist") end
 
-		events.NoTools = {}
 		local function BindTool(tool, character)
 			if not tool or not character then return end
 			if tool:IsA("Tool") and match(tool.Name, blacklisted) then
@@ -122,8 +122,8 @@ services.ToolBlacklist = {
 }
 services.Lockdown = {
 	start = function()
-		if not isFeaturePresent("f3x") then return stopService("Lockdown") end
 		events.Lockdown = {}
+		if not isFeaturePresent("f3x") then return stopService("Lockdown") end
 
 		table.insert(event.Lockdown, Players.PlayerAdded:Connect(function(plr)
 			if not match(plr.Name, exempt) then
@@ -140,12 +140,12 @@ services.Lockdown = {
 }
 
 -- UI
-UI.title = "LPI Client"
+UI.title = "- = Midnight = -"
 UI:Introduction()
 
 local Window = UI:Init(Enum.KeyCode.RightControl)
 
-local Wm = UI:Watermark("LPI Client | v1.2 | " .. UI:GetUsername())
+local Wm = UI:Watermark("Midnight | b0.1 | " .. UI:GetUsername())
 local FpsWm = Wm:AddWatermark("fps: " .. UI.fps)
 
 coroutine.wrap(function()
@@ -309,4 +309,4 @@ Players.PlayerAdded:Connect(function(plr)
 	end
 end)
 
-Notif:Notify("Loaded LPI Client", 4, "success")
+Notif:Notify("Loaded Midnight", 4, "success")
