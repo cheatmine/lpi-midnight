@@ -76,6 +76,9 @@ btools.Init = function()
 	
 	print("--[LPI]-- Got tool references!")
 end
+btools.IsInit = function()
+	return not not server.D
+end
 btools.DestroyPart = function(orig)
 	local pnan = CFrame.new(0/0, 0/0, 0/0)
 	local grab = getTServer("G")

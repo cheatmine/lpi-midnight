@@ -31,6 +31,21 @@ local function match(s, t)
 	end
 	return false
 end
+local function isFeaturePresent(ft)
+	if ft == "f3x" then
+		local active = Player.Character:FindFirstChild("F3X")
+		if not active then
+			Notif:Notify("This function requires you to hold F3X!", 4, "error")
+		end
+		return active
+	elseif ft == "btools" then
+		local active = LPI.BTools.IsInit()
+		if not active then
+			Notif:Notify("This function requires you to initialize BTools API!", 4, "error")
+		end
+		return active
+	end
+end
 
 -- Service functions
 local runningServices = {}
@@ -56,6 +71,8 @@ end
 local events = {}
 services.ToolBlacklist = {
 	start = function()
+		if not isFeaturePresent("btools") then return stopService("ToolBlacklist") end
+
 		events.NoTools = {}
 		local function BindTool(tool, character)
 			if not tool or not character then return end
@@ -105,10 +122,12 @@ services.ToolBlacklist = {
 }
 services.Lockdown = {
 	start = function()
+		if not isFeaturePresent("f3x") then return stopService("Lockdown") end
 		events.Lockdown = {}
 
 		table.insert(event.Lockdown, Players.PlayerAdded:Connect(function(plr)
 			if not match(plr.Name, exempt) then
+				if not isFeaturePresent("f3x") then return stopService("Lockdown") end
 				LPI.Btools.DestroyInstance(plr)
 			end
 		end))
@@ -160,6 +179,7 @@ tab:NewToggle("Gear Blacklist", false, function(bool)
 	end
 end)
 tab:NewButton("Invisible F3X", function()
+	if not isFeaturePresent("f3x") then return end
 	local char = Player.Character
 	if not char then return end
 	if not char:FindFirstChild("Humanoid") then return end
@@ -174,6 +194,7 @@ end)
 
 tab:NewSection("Parts")
 tab:NewButton("Delete all spawns", function()
+	if not isFeaturePresent("f3x") then return end
 	local t = {}
 	for i, v in workspace:GetChildren() do
 		if v.Name == "SpawnLocation" then
@@ -185,6 +206,7 @@ end)
 
 tab:NewSection("Gear Board")
 tab:NewButton("Delete banned gear", function()
+	if not isFeaturePresent("f3x") then return end
 	local t = {}
 	for i, v in workspace["made by FoxBinMK4"]:GetChildren() do
 		if v.Name == "Model" then
@@ -194,6 +216,7 @@ tab:NewButton("Delete banned gear", function()
 	LPI.BTools.DestroyInstances(t)
 end)
 tab:NewButton("Delete gear boards", function()
+	if not isFeaturePresent("f3x") then return end
 	LPI.BTools.DestroyInstances({
 		workspace["made by FoxBin"],
 		workspace["made by FoxBin1"],
@@ -206,6 +229,7 @@ end)
 local tab = Window:NewTab("Players")
 tab:NewSection("Actions")
 tab:NewButton("Kill All", function()
+	if not isFeaturePresent("btools") then return end
 	for i, v in Players:GetPlayers() do
 		if not match(v.Name, exempt) and v.Character then
 			LPI.BTools.Kill(v.Character)
@@ -213,12 +237,14 @@ tab:NewButton("Kill All", function()
 	end
 end)
 tab:NewTextbox("Kill", "", "", "all", "small", false, false, function(text)
+	if not isFeaturePresent("btools") then return end
 	local v = Players:FindFirstChild(text)
 	if v and v.Character then
 		LPI.BTools.Kill(v.Character)
 	end
 end)
 tab:NewButton("Kick All", function()
+	if not isFeaturePresent("f3x") then return end
 	local t = {}
 	for i, v in Players:GetPlayers() do
 		if not match(v.Name, exempt) and v.Character then
@@ -228,19 +254,22 @@ tab:NewButton("Kick All", function()
 	LPI.BTools.DestroyInstances(t)
 end)
 tab:NewTextbox("Kick", "", "", "all", "small", false, false, function(text)
+	if not isFeaturePresent("f3x") then return end
 	local v = Players:FindFirstChild(text)
 	if v then
 		LPI.BTools.DestroyInstance(v)
 	end
 end)
 tab:NewTextbox("Ban", "", "", "all", "small", false, false, function(text)
+	if not isFeaturePresent("f3x") then return end
 	local v = Players:FindFirstChild(text)
 	if v then
 		LPI.BTools.DestroyInstance(v)
-		table.insert(ban, v.Name)
+		table.insert(bans, v.Name)
 	end
 end)
 tab:NewTextbox("Punish", "", "", "all", "small", false, false, function(text)
+	if not isFeaturePresent("f3x") then return end
 	local v = Players:FindFirstChild(text)
 	if v and v.Character then
 		LPI.BTools.DestroyInstances(v.Character:GetChildren())
@@ -248,6 +277,7 @@ tab:NewTextbox("Punish", "", "", "all", "small", false, false, function(text)
 end)
 tab:NewSection("Fun")
 tab:NewButton("Everyone Naked", function()
+	if not isFeaturePresent("f3x") then return end
 	local t = {}
 	for i, v in Players:GetPlayers() do
 		if v.Character then
@@ -261,6 +291,7 @@ end)
 local tab = Window:NewTab("Server")
 tab:NewSection("Management")
 tab:NewButton("Shutdown", function()
+	if not isFeaturePresent("f3x") then return end
 	LPI.BTools.DestroyInstances(Players:GetPlayers())
 end)
 tab:NewToggle("Whitelist", false, function(bool)
@@ -273,6 +304,7 @@ end)
 
 Players.PlayerAdded:Connect(function(plr)
 	if table.find(bans, plr.Name) then
+		if not isFeaturePresent("f3x") then return end
 		LPI.BTools.DestroyInstance(plr)
 	end
 end)
