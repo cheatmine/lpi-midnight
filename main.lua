@@ -17,7 +17,10 @@ local exempt = { -- exempt players
 	Player.Name,
 	"qs_9994", "acid1ous"
 }
-local bans = {}
+local bans = { -- illum exterminate list
+	"Zelxx_007", "BeaverSkin1965", "pompeygrande",
+	"rvgfury07"
+}
 
 -- Not configurable!
 local lockdown = false
@@ -34,6 +37,9 @@ end
 local function isFeaturePresent(ft)
 	if ft == "f3x" then
 		local active = Player.Character:FindFirstChild("F3X")
+			or workspace:FindFirstChild("F3X")
+			or Player.Backpack:FindFirstChild("F3X")
+		Player.Character.Humanoid:EquipTool(active)
 		if not active then
 			Notif:Notify("This function requires you to hold F3X!", 4, "error")
 		end
@@ -145,7 +151,7 @@ UI:Introduction()
 
 local Window = UI:Init(Enum.KeyCode.RightControl)
 
-local Wm = UI:Watermark("Midnight | b0.2 | " .. UI:GetUsername())
+local Wm = UI:Watermark("Midnight | b0.2.1 | " .. UI:GetUsername())
 local FpsWm = Wm:AddWatermark("fps: " .. UI.fps)
 
 coroutine.wrap(function()
@@ -228,7 +234,6 @@ end)
 
 local users = {}
 local tab = Window:NewTab("Players")
-tab:NewSection("Actions")
 tab:NewTextbox("User selection", "", "all/others/me/<username>", "all", "small", false, false, function(text)
 	if text == "all" then
 		users = Players:GetPlayers()
@@ -251,7 +256,8 @@ tab:NewTextbox("User selection", "", "all/others/me/<username>", "all", "small",
 		end
 	end
 end)
-tab:NewButton("Kill", function(text)
+tab:NewSection("Actions")
+tab:NewButton("Kill", function()
 	if not isFeaturePresent("btools") then return end
 	for i, v in users do
 		if v.Character then
@@ -263,14 +269,14 @@ tab:NewButton("Kick", function()
 	if not isFeaturePresent("f3x") then return end
 	LPI.BTools.DestroyInstances(users)
 end)
-tab:NewButton("Ban", function(text)
+tab:NewButton("Ban", function()
 	if not isFeaturePresent("f3x") then return end
 	for i, v in users do
 		LPI.BTools.DestroyInstance(v)
 		table.insert(bans, v.Name)
 	end
 end)
-tab:NewButton("Punish", function(text)
+tab:NewButton("Punish", function()
 	if not isFeaturePresent("f3x") then return end
 	for i, v in users do
 		if v.Character then
@@ -309,6 +315,13 @@ Players.PlayerAdded:Connect(function(plr)
 		if not isFeaturePresent("f3x") then return end
 		LPI.BTools.DestroyInstance(plr)
 	end
+end)
+
+Window:NewTab("")
+
+local tab = Window:NewTab("Settings")
+tab:NewKeybind("Menu keybind", Enum.KeyCode.RightAlt, function(key)
+    UI:UpdateKeybind(Enum.KeyCode[key])
 end)
 
 Notif:Notify("Loaded Midnight", 4, "success")
