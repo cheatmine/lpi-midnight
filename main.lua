@@ -145,7 +145,7 @@ UI:Introduction()
 
 local Window = UI:Init(Enum.KeyCode.RightControl)
 
-local Wm = UI:Watermark("Midnight | b0.1 | " .. UI:GetUsername())
+local Wm = UI:Watermark("Midnight | b0.2 | " .. UI:GetUsername())
 local FpsWm = Wm:AddWatermark("fps: " .. UI.fps)
 
 coroutine.wrap(function()
@@ -226,60 +226,62 @@ tab:NewButton("Delete gear boards", function()
 	})
 end)
 
+local users = {}
 local tab = Window:NewTab("Players")
 tab:NewSection("Actions")
-tab:NewButton("Kill All", function()
+tab:NewTextbox("User selection", "", "all/others/me/<username>", "all", "small", false, false, function(text)
+	if text == "all" then
+		users = Players:GetPlayers()
+	elseif text == "others" then
+		users = {}
+		for i, v in Players:GetPlayers() do
+			if not match(v.Name, exempt) then
+				table.insert(users, v)
+			end
+		end
+	elseif text == "me" then
+		users = {Players.LocalPlayer}
+	else
+		users = {}
+		local user = Players:FindFirstChild(text)
+		if user then
+			users = {user}
+		else
+			Notif:Notify("Player not found!", 4, "error")
+		end
+	end
+end)
+tab:NewButton("Kill", function(text)
 	if not isFeaturePresent("btools") then return end
-	for i, v in Players:GetPlayers() do
-		if not match(v.Name, exempt) and v.Character then
+	for i, v in users do
+		if v.Character then
 			LPI.BTools.Kill(v.Character)
 		end
 	end
 end)
-tab:NewTextbox("Kill", "", "", "all", "small", false, false, function(text)
-	if not isFeaturePresent("btools") then return end
-	local v = Players:FindFirstChild(text)
-	if v and v.Character then
-		LPI.BTools.Kill(v.Character)
-	end
-end)
-tab:NewButton("Kick All", function()
+tab:NewButton("Kick", function()
 	if not isFeaturePresent("f3x") then return end
-	local t = {}
-	for i, v in Players:GetPlayers() do
-		if not match(v.Name, exempt) and v.Character then
-			table.insert(t, v)
-		end
-	end
-	LPI.BTools.DestroyInstances(t)
+	LPI.BTools.DestroyInstances(users)
 end)
-tab:NewTextbox("Kick", "", "", "all", "small", false, false, function(text)
+tab:NewButton("Ban", function(text)
 	if not isFeaturePresent("f3x") then return end
-	local v = Players:FindFirstChild(text)
-	if v then
-		LPI.BTools.DestroyInstance(v)
-	end
-end)
-tab:NewTextbox("Ban", "", "", "all", "small", false, false, function(text)
-	if not isFeaturePresent("f3x") then return end
-	local v = Players:FindFirstChild(text)
-	if v then
+	for i, v in users do
 		LPI.BTools.DestroyInstance(v)
 		table.insert(bans, v.Name)
 	end
 end)
-tab:NewTextbox("Punish", "", "", "all", "small", false, false, function(text)
+tab:NewButton("Punish", function(text)
 	if not isFeaturePresent("f3x") then return end
-	local v = Players:FindFirstChild(text)
-	if v and v.Character then
-		LPI.BTools.DestroyInstances(v.Character:GetChildren())
+	for i, v in users do
+		if v.Character then
+			LPI.BTools.DestroyInstances(v.Character:GetChildren())
+		end
 	end
 end)
 tab:NewSection("Fun")
-tab:NewButton("Everyone Naked", function()
+tab:NewButton("Naked", function()
 	if not isFeaturePresent("f3x") then return end
-	local t = {}
-	for i, v in Players:GetPlayers() do
+	for i, v in users do
 		if v.Character then
 			table.insert(t, v.Character:FindFirstChild("Shirt"))
 			table.insert(t, v.Character:FindFirstChild("Pants"))
