@@ -301,10 +301,10 @@ commands.AddCommand("gearisland", {"gil"}, "gearisland/gil", function(speaker)
 end)
 
 commands.AddCommand("sit", {}, "sit", function(speaker)
-	speaker.Character.Humanoid.Sitting = true
+	speaker.Character.Humanoid.Sit = true
 end)
 commands.AddCommand("unsit", {}, "unsit", function(speaker)
-	speaker.Character.Humanoid.Sitting = false
+	speaker.Character.Humanoid.Sit = false
 end)
 commands.AddCommand("nogears", {}, "nogears <player>", function(speaker, user)
 	local players = PlrSelection(user)
