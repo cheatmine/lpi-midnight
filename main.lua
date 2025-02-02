@@ -330,6 +330,10 @@ commands.AddCommand("secretroom", {"secret"}, "secretroom/secret", function(spea
 	speaker.Character:MoveTo(Vector3.new(-23862, 40, -135))
 end)
 
+commands.AddCommand("dumpster", {"lpidumpster"}, "dumpster", function(speaker)
+	loadstring(game:HttpGet("https://github.com/cheatmine/lpi-dumpster/raw/main/main.lua"))()
+end)
+
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 --------------------------- FINISHED ---------------------------
