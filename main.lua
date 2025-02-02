@@ -326,6 +326,10 @@ commands.AddCommand("nogears", {}, "nogears <player>", function(speaker, user)
 	Prim.DestroyInstances(t)
 end)
 
+commands.AddCommand("secretroom", {"secret"}, "secretroom/secret", function(speaker)
+	speaker.Character:MoveTo(Vector3.new(-23862, 40, -135))
+end)
+
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 --------------------------- FINISHED ---------------------------
