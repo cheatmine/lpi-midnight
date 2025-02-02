@@ -300,6 +300,32 @@ commands.AddCommand("gearisland", {"gil"}, "gearisland/gil", function(speaker)
 	speaker.Character:MoveTo(Vector3.new(32, 3, -86))
 end)
 
+commands.AddCommand("sit", {}, "sit", function(speaker)
+	speaker.Character.Humanoid.Sitting = true
+end)
+commands.AddCommand("unsit", {}, "unsit", function(speaker)
+	speaker.Character.Humanoid.Sitting = false
+end)
+commands.AddCommand("nogears", {}, "nogears <player>", function(speaker, user)
+	local players = PlrSelection(user)
+	local t = {}
+	for _, player in players do
+		for i, v in player.Backpack:GetChildren() do
+			if v:IsA("Tool") then
+				table.insert(t, v)
+			end
+		end
+		if player.Character then
+			for i, v in player.Character:GetChildren() do
+				if v:IsA("Tool") then
+					table.insert(t, v)
+				end
+			end
+		end
+	end
+	Prim.DestroyInstances(t)
+end)
+
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 --------------------------- FINISHED ---------------------------
