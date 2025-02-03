@@ -487,9 +487,87 @@ NotifText.Font = Enum.Font.Michroma
 NotifText.Text = "Midnight V2 notification!"
 NotifText.TextColor3 = Color3.fromRGB(255, 255, 255)
 NotifText.TextSize = 26
+NotifText.RichText = true
 
 Notify.Name = "Notify"
 Notify.Parent = UI
+
+local MV2ESP = Instance.new("Folder", UI)
+MV2ESP.Name = "MV2ESP"
+local names = {} :: {[Player]: BillboardGui}
+local events = {} :: {[Player]: RBXScriptConnection}
+local ranked = {} :: {[string]: number}
+
+local function getNickname(player: Player)
+	local rank = ranked[player.Name]
+	if rank >= 4 then
+		return `<font color="#00ff00"><stroke color="#00ff00" joins="miter" thickness="0.5" transparency="0.25"><b>⨻ {player.Name}</b></stroke></font>`
+	elseif rank > 0 then
+		return `<font color="#00ff00"><stroke color="#000000" joins="miter" thickness="0.25" transparency="0.25">▲ {player.Name}</stroke></font>`
+	else
+		return `<font color="#ffffff"><stroke color="#000000" joins="miter" thickness="0.25" transparency="0.25">{player.Name}</stroke></font>`
+	end
+end
+
+local function CharacterAdded(player: Player, character: Model)
+	if not IsInstanceRunning() then return end
+	local bl = names[player]
+	bl.Adornee = character:WaitForChild("Head")
+	if character:WaitForChild("Humanoid", 3) then
+		character.Humanoid.DisplayName = " "
+	end
+end
+local function PlayerAdded(player: Player, silent: boolean?)
+	if not IsInstanceRunning() then return end
+	local rank = player:GetRankInGroup(35462739)
+	ranked[player.Name] = rank
+	if not silent then
+		if rank == 255 then
+			Notify:Fire(`@{player.Name} Illuminati <font color="#00ff00">owner</font> joined the game`)
+		elseif rank >= 4 then
+			Notify:Fire(`@{player.Name} Illuminati <font color="#ffff00">elite</font> joined the game`)
+		elseif rank > 0 then
+			Notify:Fire(`@{player.Name} Illuminati member joined the game`)
+		end
+	end
+
+	local bl = Instance.new("BillboardGui", MV2ESP)
+	bl.Name = player.Name
+	bl.Size = UDim2.fromScale(10, 1.5)
+	bl.StudsOffsetWorldSpace = Vector3.yAxis * 2
+	bl.PlayerToHideFrom = player
+	bl.LightInfluence = 0
+	bl.AlwaysOnTop = true
+
+	local text = Instance.new("TextLabel", bl)
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.Michroma
+	text.RichText = true
+	text.Text = getNickname(player)
+	text.TextScaled = true
+
+	names[player] = bl
+
+	events[player] = player.CharacterAdded:Connect(function(character)
+		task.spawn(CharacterAdded, player, character)
+	end)
+end
+local function PlayerRemoving(player: Player)
+	if not IsInstanceRunning() then return end
+	names[player]:Destroy()
+	names[player] = nil
+	events[player]:Disconnect()
+end
+
+Players.PlayerAdded:Connect(PlayerAdded)
+Players.PlayerRemoving:Connect(PlayerRemoving)
+for i, v in Players:GetPlayers() do
+	PlayerAdded(v, true)
+	if v.Character then
+		CharacterAdded(v, v.Character)
+	end
+end
 
 --/ UI
 local AnimationTime = 1/config.AnimationSpeed
