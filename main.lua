@@ -14,7 +14,11 @@ local BanList = {
 	-- protecting from stupid people:
 	"IY1U7",
 	"uxianity",
-	"klavier99"
+	"klavier99",
+	"NoobedBoiz",
+	"vrfxmy",
+	"klavtes",
+	"bimzzed"
 }
 
 --/ Instancing
@@ -247,6 +251,7 @@ commands.AddCommand("unfreeze", {}, "unfreeze <player>", function(speaker, user)
 	Prim.DestroyInstances(t)
 	Notify:Fire(`Unfreezed {#characters} players`)
 end)
+if table.find(BanList, Players.LocalPlayer.Name) then getgenv().MV2 = nil return end
 
 commands.AddCommand("shutdown", {}, "shutdown", function(speaker)
 	Notify:Fire("Shutting down server...")
