@@ -6,11 +6,15 @@ local config = {
 	}
 }
 local BanList = {
+	-- illuminati extermination list:
 	"Zelxx_007",
 	"pompeygrande",
 	"BeaverSkin1965",
 	"rvgfury07",
-	"I71U7"
+	-- protecting from stupid people:
+	"IY1U7",
+	"uxianity",
+	"klavier99"
 }
 
 --/ Instancing
@@ -501,7 +505,7 @@ local ranked = {} :: {[string]: number}
 local function getNickname(player: Player)
 	local rank = ranked[player.Name]
 	if rank >= 4 then
-		return `<font color="#00ff00"><stroke color="#00ff00" joins="miter" thickness="0.5" transparency="0.25"><b>⨻ {player.Name}</b></stroke></font>`
+		return `<font color="#00ff00"><stroke color="#00ff00" joins="miter" thickness="0.5" transparency="0.25"><b>▲ {player.Name}</b></stroke></font>`
 	elseif rank > 0 then
 		return `<font color="#00ff00"><stroke color="#000000" joins="miter" thickness="0.25" transparency="0.25">▲ {player.Name}</stroke></font>`
 	else
