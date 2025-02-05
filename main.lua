@@ -351,6 +351,8 @@ end)
 --/ Public functions
 local MidnightV2 = {}
 
+MidnightV2.Commands = commands
+
 MidnightV2.ExecuteCommand = function(query: string)
 	local components = query:split(" ")
 	local cmd = components[1]
