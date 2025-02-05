@@ -13,12 +13,11 @@ local BanList = {
 	"rvgfury07",
 	-- protecting from stupid people:
 	"IY1U7",
-	"uxianity",
-	"klavier99",
-	"NoobedBoiz",
-	"vrfxmy",
-	"klavtes",
-	"bimzzed"
+	"IY1U7_V2",
+	"2c0u",
+	"IY1U7_SHOP",
+	"IY1U7_V3",
+	"skibidigrimace67686"
 }
 
 --/ Instancing
@@ -574,7 +573,7 @@ Players.PlayerRemoving:Connect(PlayerRemoving)
 for i, v in Players:GetPlayers() do
 	PlayerAdded(v, true)
 	if v.Character then
-		CharacterAdded(v, v.Character)
+		task.spawn(CharacterAdded, v, v.Character)
 	end
 end
 
