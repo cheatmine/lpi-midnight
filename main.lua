@@ -529,6 +529,7 @@ local function CharacterAdded(player: Player, character: Model)
 end
 local function PlayerAdded(player: Player, silent: boolean?)
 	if not IsInstanceRunning() then return end
+	if names[player] == false then return end
 	local rank = player:GetRankInGroup(35462739)
 	ranked[player.Name] = rank
 	if not silent then
@@ -565,6 +566,13 @@ local function PlayerAdded(player: Player, silent: boolean?)
 end
 local function PlayerRemoving(player: Player)
 	if not IsInstanceRunning() then return end
+	if names[player] == nil then
+		names[player] = false
+		task.delay(1, function()
+			names[player] = nil
+		end)
+		return
+	end
 	names[player]:Destroy()
 	names[player] = nil
 	events[player]:Disconnect()
