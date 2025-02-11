@@ -17,7 +17,8 @@ local BanList = {
 	"2c0u",
 	"IY1U7_SHOP",
 	"IY1U7_V3",
-	"skibidigrimace67686"
+	"skibidigrimace67686",
+	"uxianity"
 }
 
 --/ Instancing
@@ -236,15 +237,14 @@ commands.AddCommand("freeze", {}, "freeze <player>", function(speaker, user)
 end)
 commands.AddCommand("unfreeze", {}, "unfreeze <player>", function(speaker, user)
 	local characters = PlrSelection(user)
-	for i, v in characters do
-		if v.Character and v.Character:FindFirstChild("Torso") then
-			characters[i] = v.Character
-		end
-	end
 	local t = {}
-	for _, v in Freeze:GetChildren() do
-		if v:IsA("Weld") and (v.Part0 == character.Torso or v.Part1 == character.Torso) then
-			table.insert(t, v)
+	for i, v in characters do
+		if v.Character then
+			for _, weld in v.Character:GetDescendants() do
+				if weld:IsA("Weld") and (weld.Part0 == Freeze or weld.Part1 == Freeze) then
+					table.insert(t, weld)
+				end
+			end
 		end
 	end
 	Prim.DestroyInstances(t)
