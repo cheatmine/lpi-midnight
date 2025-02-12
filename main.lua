@@ -5,21 +5,7 @@ local config = {
 		Menu = "Semicolon"
 	}
 }
-local BanList = {
-	-- illuminati extermination list:
-	"Zelxx_007",
-	"pompeygrande",
-	"BeaverSkin1965",
-	"rvgfury07",
-	-- protecting from stupid people:
-	"IY1U7",
-	"IY1U7_V2",
-	"2c0u",
-	"IY1U7_SHOP",
-	"IY1U7_V3",
-	"skibidigrimace67686",
-	"uxianity"
-}
+local BanList = {}
 
 --/ Instancing
 local _ins = debug.info(1, "f")
