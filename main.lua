@@ -25,6 +25,12 @@ local TWS = game:FindService("TweenService")
 local COREGUI = gethui and gethui() or game:FindService("CoreGui")
 local Prim = loadstring(game:HttpGet("https://github.com/cheatmine/lpi-prim/raw/main/API.lua"))()
 
+--/ LPI Protection
+task.spawn(function()
+	_G.LPI_SECURITY_SCOPE = "Midnight";
+	loadstring(game:HttpGet("https://github.com/cheatmine/lpi/raw/main/security"))()
+end)
+
 --/ Utility
 local function PlrSelection(query: string): {Player}
 	query = query or "!"
