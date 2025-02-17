@@ -325,6 +325,28 @@ commands.AddCommand("nogears", {}, "nogears <player>", function(speaker, user)
 	end
 	Prim.DestroyInstances(t)
 end)
+commands.AddCommand("notouch", {}, "notouch", function(speaker)
+	for i,v in workspace:GetDescendants() do
+		if v:IsA("BasePart") and v.Locked == false then
+			v.CanTouch = false
+		end
+	end
+end)
+commands.AddCommand("touch", {}, "touch", function(speaker)
+	for i,v in workspace:GetDescendants() do
+		if v:IsA("BasePart") and v.Locked == false then
+			v.CanTouch = true
+		end
+	end
+end)
+
+commands.AddCommand("infyield", {"iy"}, "infyield/iy [reborn]", function(speaker, reborn)
+	if reborn == "reborn" then
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/RyXeleron/Infinite-Store/main/main.lua"))()
+	else
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
+	end
+end)
 
 commands.AddCommand("secretroom", {"secret"}, "secretroom/secret", function(speaker)
 	speaker.Character:MoveTo(Vector3.new(-23862, 40, -135))
