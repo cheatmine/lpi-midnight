@@ -23,13 +23,7 @@ local Players = game:FindService("Players")
 local UIS = game:FindService("UserInputService")
 local TWS = game:FindService("TweenService")
 local COREGUI = gethui and gethui() or game:FindService("CoreGui")
-local Prim = loadstring(game:HttpGet("https://github.com/cheatmine/lpi-prim/raw/main/API.lua"))()
-
---/ LPI Protection
-task.spawn(function()
-	_G.LPI_SECURITY_SCOPE = "Midnight";
-	loadstring(game:HttpGet("https://github.com/cheatmine/lpi/raw/main/security"))()
-end)
+local Moonlight = loadstring(game:HttpGet("https://raw.githubusercontent.com/cheatmine/lpi-moonlight/refs/heads/main/API.lua"))()
 
 --/ Utility
 local function PlrSelection(query: string): {Player}
@@ -63,6 +57,14 @@ local function PlrSelection(query: string): {Player}
 	end
 end
 
+local _F3X
+local function GetF3X()
+	if (_F3X and not _F3X:IsActive()) or not _F3X then
+		_F3X = Moonlight:GetF3X()
+	end
+	return _F3X
+end
+
 --/ Commands list
 local commands = {}
 commands.List = {} :: {[string]: {Alias: {string}, Display: string, Callback: (Player, ...string) -> ()}}
@@ -86,10 +88,10 @@ local lockdown = false
 
 local function InitFreeze()
 	if Freeze then if Freeze.Parent then return end end
-	Freeze = Prim.GetF3X().SyncAPI:InvokeServer("CreatePart", "Normal", CFrame.new(0, 0, 0))
+	Freeze = GetF3X():CallAPISync("CreatePart", "Normal", CFrame.new(0, 0, 0))
 	Freeze:AddTag("MV2")
 	Freeze.Name = "MV2-Freeze"
-	Prim.QueuePartChange(Freeze, {Transparency = 1, Anchored = true, CanCollide = false, CanTouch = false})
+	GetF3X():SetProperties(Freeze, {Transparency = 1, Anchored = true, CanCollide = false, CanTouch = false})
 end
 
 commands.AddCommand("bring", {}, "bring <player>", function(speaker, user)
@@ -104,16 +106,16 @@ commands.AddCommand("bring", {}, "bring <player>", function(speaker, user)
 	local garbage = {}
 	for _, character in characters do
 		task.spawn(function()
-			local mover = Prim.GetF3X().SyncAPI:InvokeServer("CreatePart", "Normal", CFrame.new(0, 0, 0))
-			local weld = Prim.Weld(mover, character.Torso)
-			Prim.QueuePartChange(mover, {CFrame = character.Torso.CFrame:Inverse() + pos, Transparency = 1, CanCollide = false, CanTouch = false})
+			local mover = GetF3X():CallAPISync("CreatePart", "Normal", CFrame.new(0, 0, 0))
+			local weld = GetF3X():Weld(mover, character.Torso)
+			GetF3X():SetProperties(mover, {CFrame = character.Torso.CFrame:Inverse() + pos, Transparency = 1, CanCollide = false, CanTouch = false})
 			table.insert(garbage, mover)
 			table.insert(garbage, weld)
 			i += 1
 		end)
 	end
 	repeat task.wait() until i == #characters
-	Prim.DestroyInstances(garbage)
+	GetF3X():DestroyInstances(garbage)
 	Notify:Fire(`Bringed {#characters} players`)
 end)
 
@@ -132,13 +134,13 @@ commands.AddCommand("ban", {}, "ban <player>", function(speaker, user)
 			table.insert(t, v)
 		end
 	end
-	Prim.DestroyInstances(t)
+	GetF3X():DestroyInstances(t)
 	Notify:Fire(`Banned {#players} players`)
 end)
 
 commands.AddCommand("kick", {}, "kick <player>", function(speaker, user)
 	local players = PlrSelection(user)
-	Prim.DestroyInstances(players)
+	GetF3X():DestroyInstances(players)
 	Notify:Fire(`Kicked {#players} players`)
 end)
 
@@ -157,7 +159,7 @@ commands.AddCommand("kill", {}, "kill <player>", function(speaker, user)
 			end
 		end
 	end
-	Prim.DestroyInstances(joints)
+	GetF3X():DestroyInstances(joints)
 	Notify:Fire(`Killed {#characters} players`)
 end)
 commands.AddCommand("loopkill", {}, "loopkill <player>", function(speaker, user)
@@ -176,7 +178,7 @@ commands.AddCommand("loopkill", {}, "loopkill <player>", function(speaker, user)
 				end
 			end
 		end
-		Prim.DestroyInstances(joints)
+		GetF3X():DestroyInstances(joints)
 	end
 end)
 
@@ -193,7 +195,7 @@ commands.AddCommand("punish", {}, "punish <player>", function(speaker, user)
 			table.insert(t, v)
 		end
 	end
-	Prim.DestroyInstances(t)
+	GetF3X():DestroyInstances(t)
 	Notify:Fire(`Deleted {#characters} players characters`)
 end)
 commands.AddCommand("looppunish", {}, "looppunish <player>", function(speaker, user)
@@ -210,7 +212,7 @@ commands.AddCommand("looppunish", {}, "looppunish <player>", function(speaker, u
 				table.insert(t, v)
 			end
 		end
-		Prim.DestroyInstances(t)
+		GetF3X():DestroyInstances(t)
 	end
 end)
 
@@ -223,7 +225,9 @@ commands.AddCommand("freeze", {}, "freeze <player>", function(speaker, user)
 		end
 	end
 	for _, character in characters do
-		task.spawn(Prim.Weld, Freeze, character.Torso)
+		task.spawn(function()
+			GetF3X():Weld(Freeze, character.Torso)
+		end)
 	end
 	Notify:Fire(`Freezed {#characters} players`)
 end)
@@ -239,15 +243,15 @@ commands.AddCommand("unfreeze", {}, "unfreeze <player>", function(speaker, user)
 			end
 		end
 	end
-	Prim.DestroyInstances(t)
+	GetF3X():DestroyInstances(t)
 	Notify:Fire(`Unfreezed {#characters} players`)
 end)
 if table.find(BanList, Players.LocalPlayer.Name) then getgenv().MV2 = nil return end
 
 commands.AddCommand("shutdown", {}, "shutdown", function(speaker)
 	Notify:Fire("Shutting down server...")
-	Prim.DestroyInstances(PlrSelection("others"))
-	Prim.DestroyInstances(PlrSelection("me"))
+	GetF3X():DestroyInstances(PlrSelection("others"))
+	GetF3X():DestroyInstances(PlrSelection("me"))
 end)
 commands.AddCommand("whitelist", {"lockdown"}, "whitelist/lockdown", function(speaker)
 	lockdown = not lockdown
@@ -293,7 +297,10 @@ commands.AddCommand("f3x", {"getf3x"}, "f3x/getf3x", function(speaker)
 end)
 
 commands.AddCommand("invisf3x", {"nohandle"}, "invisf3x/nohandle", function(speaker)
-	Prim.DestroyF3XHandle()
+	local F3X = GetF3X()
+	if F3X.Tool:FindFirstChild("Handle") then
+		F3X:DestroyInstances(F3X.Tool.Handle)
+	end
 end)
 
 commands.AddCommand("gearisland", {"gil"}, "gearisland/gil", function(speaker)
@@ -323,7 +330,7 @@ commands.AddCommand("nogears", {}, "nogears <player>", function(speaker, user)
 			end
 		end
 	end
-	Prim.DestroyInstances(t)
+	GetF3X():DestroyInstances(t)
 end)
 commands.AddCommand("notouch", {}, "notouch", function(speaker)
 	for i,v in workspace:GetDescendants() do
@@ -721,7 +728,7 @@ end)
 Players.PlayerAdded:Connect(function(player)
 	if not IsInstanceRunning() then return end
 	if table.find(BanList, player.Name) or lockdown then
-		Prim.DestroyInstance(player)
+		GetF3X():DestroyInstance(player)
 	end
 end)
 
@@ -732,4 +739,4 @@ getgenv().MV2 = {
 	Instance = debug.info(1, "f")
 }
 
-Notify:Fire(`Loaded Midnight V2! Press [{config.Keybinds.Menu}] to open command bar.`)
+Notify:Fire(`Loaded Midnight V3! Press [{config.Keybinds.Menu}] to open command bar.`)
